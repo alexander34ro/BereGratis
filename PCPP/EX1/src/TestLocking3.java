@@ -23,18 +23,25 @@ public class TestLocking3 {
 
 class MysteryA {
   protected static long count = 0;
+  protected final static Object lock = new Object();
 
-  public static synchronized void increment() {
-    count++;
+  public static void increment() {
+    synchronized (lock) {
+      count++;
+    }
   }
 
-  public static synchronized long get() { 
-    return count; 
+  public static long get() {
+    synchronized (lock) {
+      return count;
+    }
   }
 }
 
 class MysteryB extends MysteryA {
-  public static synchronized void increment4() {
-    count += 4;
+  public static void increment4() {
+    synchronized (lock) {
+      count+=4;
+    }
   }
 }

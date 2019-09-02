@@ -87,6 +87,14 @@ Same as 1.
 1.8
 
 1.
+This happens because increment() uses a lock on the Class object of MysteryA, while increment4() uses a lock on the Class object of MysteryB. As a result, the two methods are never fighting for the same lock.
 
 2.
+Inside MysteryA, we added a
+protected final static Object lock = new Object();
+And used it to synchronize the access to sensible data:
+synchronized (lock) {
+ count++;
+}
+
 

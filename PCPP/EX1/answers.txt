@@ -1,0 +1,218 @@
+Exercise 1.1
+
+1)
+
+Count is 13855924 and should be 20000000
+
+2)
+
+No, this is not correct. Most times the value will indeed be 200.
+This is due to the high processing speed of modern CPUs.
+BUT IT WILL NOT ALWAYS BE CORRECT.
+Count is 198 and should be 200 // using battery saver
+
+3)
+
+It will make no difference as this is just syntactic sugar.
+The code will be compiled similarly.
+Count is 19891212 and should be 20000000 // count += 1
+Count is 19904858 and should be 20000000 // count++
+
+4)
+
+Results will be just as before, different from the expected value.
+Even though now we don’t call the same piece of code in both threads, 
+we still alter the same memory location from both of them.
+Count is -161582 and should be 0
+
+5)
+
+Count is -130504 and should be 0
+Count is 37225 and should be 0
+Count is -14744 and should be 0
+Count is 0 and should be 0
+First 3 results are wrong due to the fact that we alter shared memory
+from different threads that execute non-atomic operations
+with no mutual exclusion mechanisms in place.
+The last result is correct as the synchronized keyword 
+ensures mutual exclusion using a lock on the lc variable.
+
+Exercise 1.2
+
+1) 
+
+Sometimes, whenever the first thread sleeps (before it prints out | ), 
+the second thread may come in and print - immediately, so the result 
+is --||.
+
+2) 
+
+Synchronized adds the fact that one thread has to finish its business 
+before the second thread starts. For example, 
+it makes sure that thread 1 prints -, sleeps 500 milliseconds 
+and then prints |, and after that it lets thread 2 do what it needs to do and so on.
+
+3)
+
+public void print() {
+    synchronized (new Object()) {
+        System.out.print("-");
+        try { Thread.sleep(50); } catch (InterruptedException exn) { }
+        System.out.print("|");
+    }
+}
+
+4)
+
+class Printer {
+public static void print() {
+    synchronized (Printer.class) {
+        System.out.print("-");
+        try { Thread.sleep(50); } catch (InterruptedException exn) { }
+        System.out.print("|");
+    }
+}
+
+public static void main(String[] args) {
+
+    Thread t1 = new Thread(){
+        @Override
+        public void run() {
+            while(true){
+                Printer.print();
+            }
+        }
+    };
+
+    Thread t2 = new Thread(){
+        @Override
+        public void run() {
+            while(true){
+                Printer.print();
+            }
+        }
+    };
+
+    t1.start();
+    t2.start();
+}
+
+
+Exercise 1.3
+
+1)
+
+Yes, there is an infinite loop.
+
+2)
+
+Threads terminate as they should.
+
+3)
+
+The .get() function doesn't have visibility to the main thread 
+and therefore the loop doesn't terminate
+
+4)
+
+The threads terminate as expected. 
+The "volatile" keywword warns the compiler that the variable in case 
+will be stored in the main memory instead of being cached and 
+guarantees visibility across threads.
+In this instance, it would be enough to use volatile instead of synchronizing.
+
+
+Exercise 1.4
+
+1) 
+
+Total: 63 seconds
+
+2) 
+
+It is way faster; Total: 14 seconds
+
+3) 
+
+No, it returned 2998941
+
+4) 
+
+It doesn't matter because the get method only returns the count, 
+it doesn't do any additional action (like incrementing, etc)
+
+
+Exercise 1.5
+
+1) 
+
+Sum is 1532100.000000 and should be 2000000.000000 
+and other similar results indicate that the class is not thread-safe.
+
+2) 
+
+The static synchronized is a lock on the Class object of Mistery.
+The non-static synchronized is a lock on the “m” instance of Mistery.
+Therefore the methods don't mutually exclude eachother 
+and cause similar errors to Exercise 1.1 
+
+3)
+
+The problem can be fixed by implementing an explicit lock on the resource m 
+using the synchronized(resource) syntax in the run() method of the thread.
+
+
+Exercise 1.6
+
+1) 
+
+The simplest way would be to add the keyword 'synchronized' 
+to each method available in the class
+
+2) 
+
+It is not the most optimal way because each synchronized method 
+needs to wait before the other synchronized one is finished.
+For example, if a thread call size() and another one calls get(x), 
+they would have to wait for each other even though their actions are mutually thread-safe.
+
+3) 
+
+The way this lock is implemented is way worse optimized than the synchronized version.
+It is not thread-safe and there would be problems with data consistency.
+This only ensures mutual exclusion when two threads execute the same function.
+If a thread calls set(x) while another one calls add(x) 
+they could overwrite each others results.
+
+
+Exercise 1.7
+
+1) 
+
+The field can be made thread-safe by being set as volatile 
+and implementing locks when working with it / synchronizing the add methods.
+
+2) 
+
+Sets can be used in sync with the synchronizedSet type 
+from the Collections library (suitable for all kinds of collections) 
+or by doing the same as above (1.7.1).
+
+
+Exercise 1.8
+
+1)
+
+This happens because increment() uses a lock on the Class object of MysteryA, 
+while increment4() uses a lock on the Class object of MysteryB. 
+As a result, the two methods are never fighting for the same lock.
+
+2)
+
+Inside MysteryA, we added a
+
+protected final static Object lock = new Object();
+
+And used it to synchronize the access to sensible data:
+
+synchronized (lock) { count++; }
