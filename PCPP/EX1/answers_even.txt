@@ -1,0 +1,68 @@
+Exercise 1.2
+
+1) Sometimes, whenever the first thread sleeps (before it prints out | ), the second thread may come in and print - immediately, so the result 
+is --||.
+
+2) Synchronized adds the fact that one thread has to finish its business before the second thread starts. For example, 
+it makes sure that thread 1 prints -, sleeps 500 milliseconds and then prints |, and after that it lets thread 2 do what it needs to do and so on.
+
+3)
+    public void print() {
+        synchronized (new Object()) {
+            System.out.print("-");
+            try { Thread.sleep(50); } catch (InterruptedException exn) { }
+            System.out.print("|");
+        }
+    }
+
+4)
+    class Printer {
+    public static void print() {
+        synchronized (Printer.class) {
+            System.out.print("-");
+            try { Thread.sleep(50); } catch (InterruptedException exn) { }
+            System.out.print("|");
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Thread t1 = new Thread(){
+            @Override
+            public void run() {
+                while(true){
+                    Printer.print();
+                }
+            }
+        };
+
+        Thread t2 = new Thread(){
+            @Override
+            public void run() {
+                while(true){
+                    Printer.print();
+                }
+            }
+        };
+
+        t1.start();
+        t2.start();
+    }
+}
+
+Exercise 1.4
+
+1) Total: 63 seconds
+2) It is way faster; Total: 14 seconds
+3) No, it returned 2998941
+4) It doesn't matter because the get method only returns the count, it doesn't do any additional action (like incrementing, etc)
+
+Exercise 1.6
+
+1) The simplest way would be to add the keyword 'synchronized' to each method available in the class
+2) It is not the most optimal way because each synchronized method needs to wait before the other synchronized one is finished.
+3) The way this lock is implemented is way worse optimized than the synchronized version because each instance has to wait for the locked thread to finish. Conclusively, it is not thread-safe and there would be problems with data consistency.
+
+Exercise 1.8
+
+1) A static synchronized method will lock the class instead of the object so 

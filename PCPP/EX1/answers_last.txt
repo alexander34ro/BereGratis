@@ -1,0 +1,92 @@
+1.1
+
+1.
+Count is 13855924 and should be 20000000
+
+2.
+No, this is not correct. Most times the value will indeed be 200.
+This is due to the high processing speed of modern CPUs.
+BUT IT WILL NOT ALWAYS BE CORRECT.
+Count is 198 and should be 200 // using battery saver
+
+3.
+It will make no difference as this is just syntactic sugar.
+The code will be compiled similarly.
+Count is 19891212 and should be 20000000 // count += 1
+Count is 19904858 and should be 20000000 // count++
+
+4.
+Results will be just as before, different from the expected value.
+Even though now we don’t call the same piece of code in both threads, 
+we still alter the same memory location from both of them.
+Count is -161582 and should be 0
+
+5.
+Count is -130504 and should be 0
+Count is 37225 and should be 0
+Count is -14744 and should be 0
+Count is 0 and should be 0
+First 3 results are wrong due to the fact that we alter shared memory
+from different threads that execute non-atomic operations
+with no mutual exclusion mechanisms in place.
+The last result is correct as the synchronized keyword 
+ensures mutual exclusion using a lock on the lc variable.
+
+
+1.5
+
+1. 
+Sum is 1648801.000000 and should be 2000000.000000
+The class Mistery is not thread-safe.
+
+2.
+The static synchronized is a lock on the Class object of Mistery.
+The non-static synchronized is a lock on the “m” instance of Mistery.
+As these locks are independent of each other,
+operations are not thread-safe.
+
+3.
+Solved this by adding a ReentrantLock and using it to gain mutual exclusion during every operation:
+class Mystery { private static ReentrantLock l = new ReentrantLock();
+…
+l.lock();
+sum += x;
+l.unlock();
+…
+
+Sum is 2000000.000000 and should be 2000000.000000
+
+
+1.6
+
+1.
+The class could be made thread-safe by syncronizing every method. 
+(or by making a value volatile 
+(but I think you expected the other answer)
+
+2.
+This is not as scalable as possible because the lock will be on the instance of DoubleArrayList which means two threads could not execute different functions of DoubleArrayList in parallel.
+
+For example, if a thread call size() and another one calls get(x), they would have to wait for each other even though their actions are thread-safe.
+
+3.
+This is not thread-safe and does not achieve visibility. 
+This only ensures mutual exclusion when two threads execute the same function.
+If a thread calls set(x) while another one calls add(x) they could overwrite each others results.
+
+
+
+1.7
+
+1.
+This could be achieved with a lock that has to be obtained before any change is made to the totalSize field. 
+
+2.
+Same as 1.
+
+1.8
+
+1.
+
+2.
+

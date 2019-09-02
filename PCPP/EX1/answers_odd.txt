@@ -1,0 +1,38 @@
+1.1
+1. Run 1:Count is 18907085 and should be 20000000
+Run 2:Count is 15291639 and should be 20000000
+Run 3:Count is 15580655 and should be 20000000
+2. Count is 195 and should be 200
+Count is 200 and should be 200
+Count is 139 and should be 200
+So the software can not be considered correct, as it can be seen it is a matter of chance if the result will be the correct one or not. Because the increment is not synchronized, threads overlap trying to increment the count variable and this can still occur with a smaller count, but there are less chances - which is why sometimes the result is good.
+3. Changing the syntax doesn't change the operation itself and the fact that it is thread-unsafe.
+4. The expected value is 0, but changing + to - will have the same result as above, the operation itself is still unsafe and prone to misreads/miswrites.
+Count is -31700 and should be 0
+Count is -42700 and should be 0
+Count is  76580 and should be 0
+As in the case of increment, the methods should be synchronized in order to avoid multipe read/write attemps at the same time.
+5.
+a)Count is -31700 and should be 0
+Count is -42700 and should be 0
+Count is  76580 and should be 0
+b)Count is -23533 and should be 0
+Count is -19182 and should be 0
+c)Produces the same kind of results as b)
+d)All the times the result will now be, as expected, 0 - because now all the functions trying to work with the variable "count" are synchronized and therefore will not overlap when reading/writing the variable.
+
+1.3
+1.Yes, there is an infinite loop.
+2.Threads terminate as they should.
+3.The .get() function doesn't have visibility to the main thread and therefore the loop doesn't terminate
+4.The threads terminate as expected. The "volatile" keywword warns the compiler that the variable in case will be stored in the main memory instead of being cached and guarantees visibility across threads.
+In this instance, it would be enough to use volatile instead of synchronizing.
+
+1.5
+1. Sum is 1532100.000000 and should be 2000000.000000 and other similar results indicate that the class is not thread-safe.
+2. Synchronizing a static method means that the lock will be put on the class, while an instance method being syncrhonized puts the lock on the object - therefore the methods don't mutually exclude eachother and cause similar errors to Exercise 1.1 
+3. The problem can be fixed by implementing an explicit lock on the resource m using the synchronized(resource) syntax in the run() method of the thread.
+
+1.7
+1. The field can be made thread-safe by being set as volatile and implementing locks when working with it / synchronizing the add methods.
+2. Sets can be used in sync with the synchronizedSet type from the Collections library (suitable for all kinds of collections) or by doing the same as above.
