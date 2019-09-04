@@ -24,10 +24,10 @@ public class TestLongCounterExperiments {
 
 class LongCounterEx {
   private long count = 0;
-  public  void increment() {
+  public synchronized void increment() {
     count++;
   }
-  public  void decrement() {
+  public synchronized void decrement() {
 	    count--;
 	  }
   public synchronized long get() { 
