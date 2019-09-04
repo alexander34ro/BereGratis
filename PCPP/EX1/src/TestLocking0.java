@@ -1,19 +1,20 @@
 // For week 1
 // sestoft@itu.dk * 2015-10-29
 
-import java.util.concurrent.locks.ReentrantLock;
-
 public class TestLocking0 {
   public static void main(String[] args) {
     final int count = 1_000_000;
     Mystery m = new Mystery();
-    Thread t1 = new Thread(() -> {
-      for (int i=0; i<count; i++)
-        m.addInstance(1);
-    });
-    Thread t2 = new Thread(() -> {
-      for (int i=0; i<count; i++)
-        m.addStatic(1);
+    Thread t1 = new Thread(() -> { synchronized(m) {
+	for (int i=0; i<count; i++)
+	  m.addInstance(1); 
+      }
+  });
+    Thread t2 = new Thread(() -> { 
+    	synchronized(m) {
+	for (int i=0; i<count; i++)
+	  m.addStatic(1); 
+      }
     });
     t1.start(); t2.start();
     try { t1.join(); t2.join(); } catch (InterruptedException exn) { }
@@ -22,25 +23,17 @@ public class TestLocking0 {
 }
 
 class Mystery {
-  private static ReentrantLock l = new ReentrantLock();
-  private static double sum = 0;
+  private  static double sum = 0;
 
-  public static void addStatic(double x) {
-    l.lock();
+  public static synchronized void addStatic(double x) {
     sum += x;
-    l.unlock();
   }
 
-  public void addInstance(double x) {
-    l.lock();
+  public synchronized void addInstance(double x) {
     sum += x;
-    l.unlock();
   }
 
-  public static double sum() {
-    l.lock();
-    double s = sum;
-    l.unlock();
-    return s;
+  public static synchronized double sum() {
+    return sum;
   }
 }

@@ -1,32 +1,34 @@
 // For week 1
 // sestoft@itu.dk * 2015-10-29
 
+import java.util.Collections;
 import java.util.HashSet;
 
 public class TestLocking2 {
   public static void main(String[] args) {
-    DoubleArrayList dal1 = new DoubleArrayList();
+    DoubleArrayList2 dal1 = new DoubleArrayList2();
     dal1.add(42.1); dal1.add(7.2); dal1.add(9.3); dal1.add(13.4); 
     dal1.set(2, 11.3);
     for (int i=0; i<dal1.size(); i++)
       System.out.println(dal1.get(i));
-    DoubleArrayList dal2 = new DoubleArrayList();
+    DoubleArrayList2 dal2 = new DoubleArrayList2();
     dal2.add(90.1); dal2.add(80.2); dal2.add(70.3); dal2.add(60.4); dal2.add(50.5); 
-    DoubleArrayList dal3 = new DoubleArrayList();
-    System.out.printf("Total size = %d%n", DoubleArrayList.totalSize());
-    System.out.printf("All lists  = %s%n", DoubleArrayList.allLists());
+    DoubleArrayList2 dal3 = new DoubleArrayList2();
+    System.out.printf("Total size = %d%n", DoubleArrayList2.totalSize());
+    System.out.printf("All lists  = %s%n", DoubleArrayList2.allLists());
+    
   }
 }
 
-class DoubleArrayList {
+class DoubleArrayList2 {
   private static int totalSize = 0;
-  private static HashSet<DoubleArrayList> allLists = new HashSet<>();
+  private static HashSet<DoubleArrayList2> allLists = new HashSet<>();
 
   // Invariant: 0 <= size <= items.length
   private double[] items = new double[2];
   private int size = 0;
 
-  public DoubleArrayList() {
+  public DoubleArrayList2() {
     allLists.add(this);
   }
 
@@ -79,7 +81,7 @@ class DoubleArrayList {
     return totalSize;
   }
 
-  public static HashSet<DoubleArrayList> allLists() {
+  public static HashSet<DoubleArrayList2> allLists() {
     return allLists;
   }
 }
