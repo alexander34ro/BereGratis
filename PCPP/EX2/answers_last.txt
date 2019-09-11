@@ -23,3 +23,58 @@ It’s generally better to return a snapshot of the data at that precise moment 
 6.
 
 Done.
+
+
+
+2.4
+
+1.
+
+Done.
+
+2.
+
+115 000 operations
+28 087ms
+
+This is thread-safe but not scalable.
+
+3.
+
+209 604 operations
+14 241ms
+
+Writing to a ConcurrentHashMap is blocking. Reads are favored so there could be multiple null reads until a thread finally writes the computed value to the cache. As the reading threads don’t have access to the already computed value, they compute it again.
+
+This is scalable but may result in a high number of extra computations.
+
+4.
+
+117 706 operations
+13 411ms
+
+Similar to the previous one, but this time the number of computations is reduced due to the use of futures that are instantly cached. Duplicate computations are still present because the non-atomic Hash.put is used.
+
+5.
+
+115 000 operations
+12 822ms
+
+This time we executed the expected number of computations due to the use of the atomic Hash.putIfAbsent in combination with futures.
+
+This is thread-safe and scalable with no chance of extra computations.
+
+6.
+
+115 000 operations
+13 530ms
+
+Pretty much the same as the previous solution, but with less code due to using Hash.computeIfAbsent.
+
+7.
+
+640 000 operations
+28 774ms
+
+Because in Java arguments are evaluated before passing them to a function, c.compute(arg) will always be executed.
+
