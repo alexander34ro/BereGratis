@@ -1,0 +1,25 @@
+2.3
+
+1.
+
+The methods Histogram2.increment and Histogram2.getCount need to be synchronized because they read from and write to shared memory in non-atomic manners. The method Histogram2.getSpan does not need to be synchronized because the span of the array stays constant (could be attributed to a final variable).
+
+2.
+
+Done.
+
+3.
+
+Yes, you can, as these operations are now atomic, there is no need for synchronization.
+
+4.
+
+Done.
+
+5.
+
+It’s generally better to return a snapshot of the data at that precise moment in time, so I syncronized these methods in order to avoid possible mutations while iterating the array.
+
+6.
+
+Done.
