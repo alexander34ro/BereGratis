@@ -1,0 +1,175 @@
+Exercise 3.1.
+1) 
+
+System info:
+# OS:   Windows 10; 10.0; amd64
+# JVM:  Oracle Corporation; 1.8.0_191
+# CPU:  Intel64 Family 6 Model 158 Stepping 9, GenuineIntel; 8 "cores"
+# Date: 2019-09-16T20:03:43+0200
+
+Intel Core i7 - 7700HQ - QuadCore @2.80Ghz
+16GB RAM, x64
+
+Mark 1 - 5.8ns, 5.1ns, 5.4ns
+Mark 2 - 25.4ns, 25.0ns, 25.4ns
+Mark 3 - 25.8ns, 25.8ns, 25.9ns, 25.5ns, 25.2ns, 25.6ns, 25.8ms, 25.2ns, 25.7ns
+Mark 4 - 25.7 ns +/-  0.332 
+Mark 5 -  
+ 295.0 ns +/-   512.32          2
+ 120.0 ns +/-    63.25          4
+ 265.0 ns +/-   201.02          8
+ 220.0 ns +/-   190.05         16
+  31.6 ns +/-     4.53         32
+  33.4 ns +/-    13.59         64
+  35.6 ns +/-    20.02        128
+  32.5 ns +/-    11.43        256
+  45.5 ns +/-    11.03        512
+  28.1 ns +/-     0.67       1024
+  28.4 ns +/-     1.64       2048
+  29.8 ns +/-     1.95       4096
+  26.7 ns +/-     0.82       8192
+  26.8 ns +/-     0.81      16384
+  26.9 ns +/-     3.09      32768
+  27.2 ns +/-     1.10      65536
+  26.4 ns +/-     1.90     131072
+  25.8 ns +/-     1.50     262144
+  25.5 ns +/-     0.75     524288
+  25.2 ns +/-     0.53    1048576
+  24.8 ns +/-     0.35    2097152
+  24.8 ns +/-     0.39    4194304
+  25.9 ns +/-     0.55    8388608
+  26.0 ns +/-     0.41   16777216
+Mark 6 - 
+multiply                            480.0    1079.15          2
+multiply                            497.5    1045.06          4
+multiply                            376.3     788.47          8
+multiply                            236.3     368.77         16
+multiply                             85.9      57.23         32
+multiply                             77.8      66.33         64
+multiply                             92.7      73.85        128
+multiply                             73.1      33.78        256
+multiply                             53.2      30.89        512
+multiply                             32.6       0.51       1024
+multiply                             32.5       2.50       2048
+multiply                             35.5       2.53       4096
+multiply                             27.4       2.68       8192
+multiply                             28.0       2.98      16384
+multiply                             24.9       1.31      32768
+multiply                             27.2       2.99      65536
+multiply                             25.4       1.02     131072
+multiply                             25.4       1.62     262144
+multiply                             25.1       1.41     524288
+multiply                             24.8       0.72    1048576
+multiply                             24.7       0.60    2097152
+multiply                             24.9       0.43    4194304
+multiply                             25.3       0.55    8388608
+multiply                             25.6       0.79   16777216
+
+Comments: 
+Regarding Mark1, the results are very similar to the ones which can be found on Microbenchmarks, no surprises here as the JIT compiler optimized the function calls.
+Regarding Mark2, the results registered are more consistent, but are slightly different than the ones from Microbenchmarks. This might be due to a more performant processor. 
+Again, these results are perfectly fine as we avoided the optimization by the implementation of the dummy variable, hence the difference from the 2 tests (5ns vs 25ns)
+Regarding Mark3, it brings only convenience to the code, automates the generation of a certain number of results, 10 in this case.
+Regarding Mark4, besides the computation time, it also computes its average and its standard deviation, again for convenience's sake. The algorithm for counting hasn't changed and the results are pretty conistent.
+Regarding Mark5, it brings even more automation as it detects how many results can be shown in a time limit of 0.25seconds. Again, the results are the ones expected, and the difference between our tests and the ones 
+available in Microbenchmarks are due to a more peformant system.
+Regarding Mark6, it brings generalization. The past results have been registered via the multiplication function, and Mark6 brings generalization to any function, nothing else, nothing more. The results are similar to the
+ones from Mark5 (consistent with the past measurements)
+
+2)
+Computer 1:
+System info:
+# OS:   Windows 10; 10.0; amd64
+# JVM:  Oracle Corporation; 1.8.0_191
+# CPU:  Intel64 Family 6 Model 158 Stepping 9, GenuineIntel; 8 "cores"
+# Date: 2019-09-16T20:03:43+0200
+
+Intel Core i7 - 7700HQ - QuadCore @2.80Ghz
+16GB RAM, x64
+
+Results computer 1: 
+
+multiply                             25.4       0.61   16777216
+pow                                  74.8       1.89    4194304
+exp                                  55.7       1.52    8388608
+log                                  29.1       0.26   16777216
+sin                                  71.5       1.51    4194304
+cos                                  71.2       1.74    4194304
+tan                                 126.9       2.25    2097152
+asin                                195.0       2.57    2097152
+acos                                186.7       2.07    2097152
+atan                                 40.6       0.63    8388608
+
+Comments computer 1: As it can be seen, the results are similar to the ones found in the Microbenchmarks. The differences are existant because of computers' resources.
+
+Exercise 3.2.
+1) It can be observed that, regarding time measurement, the first 2-3 times each function is called (e.g. hashCode, pointCreation, etc), the measurements are pretty big, but as it is executed more often, the results have 
+smaller values than before. Also, in the last 4-5 measurements, for all test cases, the results tend to be far more consistent than before.
+
+2)
+# OS:   Windows 10; 10.0; amd64
+# JVM:  Oracle Corporation; 1.8.0_191
+# CPU:  Intel64 Family 6 Model 158 Stepping 9, GenuineIntel; 8 "cores"
+# Date: 2019-09-16T20:40:07+0200
+hashCode()                            2.8 ns       0.10  134217728
+Point creation                       44.8 ns       0.33    8388608
+Thread's work                      5521.9 ns      23.81      65536
+Thread create                       651.1 ns      19.01     524288
+Thread create start               61524.5 ns    2066.95       8192
+Thread create start join         144342.4 ns   11804.88       2048
+ai value = 1515460000
+Uncontended lock                      4.2 ns       0.10   67108864
+
+Consistent results, similar to the ones registered above.
+
+Exercise 3.3.
+1) 
+# OS:   Windows 10; 10.0; amd64
+# JVM:  Oracle Corporation; 1.8.0_191
+# CPU:  Intel64 Family 6 Model 158 Stepping 9, GenuineIntel; 8 "cores"
+# Date: 2019-09-16T21:04:22+0200
+countSequential                    9932.7 us     282.27         32
+countParallelN      1             10090.4 us     210.30         32
+countParallelNLocal      1          9447.1 us     163.11         32
+countParallelN      2              6931.7 us     205.73         64
+countParallelNLocal      2          6647.9 us     388.13         64
+countParallelN      3              5035.6 us     307.67         64
+countParallelNLocal      3          4799.9 us     177.42         64
+countParallelN      4              4456.5 us     556.86         64
+countParallelNLocal      4          3844.0 us     160.93        128
+countParallelN      5              3804.9 us     165.25         64
+countParallelNLocal      5          3727.2 us     194.16        128
+countParallelN      6              3357.8 us      60.94        128
+countParallelNLocal      6          3191.9 us      23.77        128
+countParallelN      7              3045.4 us      18.90        128
+countParallelNLocal      7          2924.5 us      32.03        128
+countParallelN      8              3039.3 us     107.61        128
+countParallelNLocal      8          3128.6 us     374.68        128
+countParallelN      9              3130.3 us     144.79        128
+countParallelNLocal      9          2899.3 us      18.36        128
+countParallelN     10              2995.6 us      17.34        128
+countParallelNLocal     10          2888.8 us      16.80        128
+countParallelN     11              3174.7 us      98.07        128
+countParallelNLocal     11          2969.3 us      35.04        128
+countParallelN     12              3455.7 us     456.53        128
+countParallelNLocal     12          3008.9 us      37.40        128
+countParallelN     13              3181.1 us     119.06        128
+countParallelNLocal     13          3043.0 us      64.20        128
+countParallelN     14              3101.0 us     160.65        128
+countParallelNLocal     14          3016.3 us     148.66        128
+countParallelN     15              3034.4 us      40.46        128
+countParallelNLocal     15          3041.0 us     108.52        128
+
+2) https://docs.google.com/spreadsheets/d/1ILHPtjiYGUQmjBAT8ioFgYybEYbovNJfwKiE13xHuls/edit?usp=sharing
+
+3) From the measurements, it can be seen that the performance has been better since the program has been run in at least 4 threads and then it stayed consistent even though more threads have been created. 
+Conclusively, we do no think that there is a relation between the number of cores of the CPU and the number of threads used.
+
+4) By using Atomic Long instead of the user-implemeted class "Long Counter", it can be observed that the results are a little bit more performant (in average by 2.7 us). 
+In general, one should use the adequate already built classes and methods because they could prove to be more performant and optimal.
+
+5) Yes, it is faster in all scenarios. *It can be seen in the charts as well, "Count Parallel Local" computes the performance via the described method. 
+
+Exercise 3.4.
+
+1)
