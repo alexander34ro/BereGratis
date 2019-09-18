@@ -1,4 +1,5 @@
-Exercise 3.1.
+Exercise 3.1
+
 1) 
 
 System info:
@@ -67,16 +68,22 @@ multiply                             25.6       0.79   16777216
 
 Comments: 
 Regarding Mark1, the results are very similar to the ones which can be found on Microbenchmarks, no surprises here as the JIT compiler optimized the function calls.
+
 Regarding Mark2, the results registered are more consistent, but are slightly different than the ones from Microbenchmarks. This might be due to a more performant processor. 
+
 Again, these results are perfectly fine as we avoided the optimization by the implementation of the dummy variable, hence the difference from the 2 tests (5ns vs 25ns)
+
 Regarding Mark3, it brings only convenience to the code, automates the generation of a certain number of results, 10 in this case.
-Regarding Mark4, besides the computation time, it also computes its average and its standard deviation, again for convenience's sake. The algorithm for counting hasn't changed and the results are pretty conistent.
+
+Regarding Mark4, besides the computation time, it also computes its average and its standard deviation, again for convenience's sake. The algorithm for counting hasn't changed and the results are pretty consistent.
+
 Regarding Mark5, it brings even more automation as it detects how many results can be shown in a time limit of 0.25seconds. Again, the results are the ones expected, and the difference between our tests and the ones 
-available in Microbenchmarks are due to a more peformant system.
+available in Microbenchmarks are due to a more performant system.
 Regarding Mark6, it brings generalization. The past results have been registered via the multiplication function, and Mark6 brings generalization to any function, nothing else, nothing more. The results are similar to the
 ones from Mark5 (consistent with the past measurements)
 
 2)
+
 Computer 1:
 System info:
 # OS:   Windows 10; 10.0; amd64
@@ -102,11 +109,15 @@ atan                                 40.6       0.63    8388608
 
 Comments computer 1: As it can be seen, the results are similar to the ones found in the Microbenchmarks. The differences are existant because of computers' resources.
 
-Exercise 3.2.
-1) It can be observed that, regarding time measurement, the first 2-3 times each function is called (e.g. hashCode, pointCreation, etc), the measurements are pretty big, but as it is executed more often, the results have 
+Exercise 3.2
+
+1)
+
+It can be observed that, regarding time measurement, the first 2-3 times each function is called (e.g. hashCode, pointCreation, etc), the measurements are pretty big, but as it is executed more often, the results have 
 smaller values than before. Also, in the last 4-5 measurements, for all test cases, the results tend to be far more consistent than before.
 
 2)
+
 # OS:   Windows 10; 10.0; amd64
 # JVM:  Oracle Corporation; 1.8.0_191
 # CPU:  Intel64 Family 6 Model 158 Stepping 9, GenuineIntel; 8 "cores"
@@ -122,8 +133,10 @@ Uncontended lock                      4.2 ns       0.10   67108864
 
 Consistent results, similar to the ones registered above.
 
-Exercise 3.3.
+Exercise 3.3
+
 1) 
+
 # OS:   Windows 10; 10.0; amd64
 # JVM:  Oracle Corporation; 1.8.0_191
 # CPU:  Intel64 Family 6 Model 158 Stepping 9, GenuineIntel; 8 "cores"
@@ -160,16 +173,55 @@ countParallelNLocal     14          3016.3 us     148.66        128
 countParallelN     15              3034.4 us      40.46        128
 countParallelNLocal     15          3041.0 us     108.52        128
 
-2) https://docs.google.com/spreadsheets/d/1ILHPtjiYGUQmjBAT8ioFgYybEYbovNJfwKiE13xHuls/edit?usp=sharing
+2) 
 
-3) From the measurements, it can be seen that the performance has been better since the program has been run in at least 4 threads and then it stayed consistent even though more threads have been created. 
-Conclusively, we do no think that there is a relation between the number of cores of the CPU and the number of threads used.
+https://docs.google.com/spreadsheets/d/1ILHPtjiYGUQmjBAT8ioFgYybEYbovNJfwKiE13xHuls/edit?usp=sharing
 
-4) By using Atomic Long instead of the user-implemeted class "Long Counter", it can be observed that the results are a little bit more performant (in average by 2.7 us). 
+3)
+
+From the measurements, it can be seen that the performance has been better since the program has been run in at least 4 threads and then it stayed consistent even though more threads have been created. 
+Conclusively, we do not think that there is a relation between the number of cores of the CPU and the number of threads used.
+
+4) 
+
+By using Atomic Long instead of the user-implemented class "Long Counter", it can be observed that the results are a little bit more performant (on average by 2.7 us). 
 In general, one should use the adequate already built classes and methods because they could prove to be more performant and optimal.
 
-5) Yes, it is faster in all scenarios. *It can be seen in the charts as well, "Count Parallel Local" computes the performance via the described method. 
+5) 
+
+Yes, it is faster in all scenarios. *It can be seen in the charts as well, "Count Parallel Local" computes the performance via the described method. 
 
 Exercise 3.4.
 
 1)
+
+Memoizer1      8358160.6
+
+2)
+
+Memoizer2       2185831.5
+
+3)
+
+Memoizer3       2114095.1
+
+4)
+
+Memoizer4       2137199.1
+
+5)
+
+Memoizer5       2058707.6
+
+6)
+
+Memoizer0       2231381.1
+
+7)
+
+Memoizer5 is the best implementation with a time of 2058707.6 ns. This is in accordance with lecture’s and Goetz’s development of the cache classes, Memoizer5 being the most advanced implementation.
+
+8)
+
+I would setup a REST API that serves static news articles as JSON and caches results based on request parameters.
+
