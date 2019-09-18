@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.IntToDoubleFunction;
 
 
 // Interface that represents a function from A to V
@@ -23,6 +22,7 @@ public class TestCache {
                 cachingFactorizer = new Memoizer1<Long, long[]>(factorizer);
         // cachingFactorizer = factorizer;
 
+        /*
         long p = 71827636563813227L;
 
         print(factorizer.compute(p));
@@ -37,6 +37,7 @@ public class TestCache {
         print(cachingFactorizer.compute(p));
         print(cachingFactorizer.compute(p));
         print(cachingFactorizer.compute(p));
+        */
 
         System.out.println("******");
         Factorizer f = new Factorizer();
@@ -49,35 +50,41 @@ public class TestCache {
         System.out.println(f.getCount());
 
         System.out.println("!!!!!!!!!!!!!!!!!!!!");
-//        Mark7("Memoizer0", exerciseFactorizer(new Memoizer0<>(f)));
-//        Mark7("Memoizer1", exerciseFactorizer(new Memoizer0<>(f)));
-//        Mark7("Memoizer2", exerciseFactorizer(new Memoizer0<>(f)));
-//        Mark7("Memoizer3", exerciseFactorizer(new Memoizer0<>(f)));
-//        Mark7("Memoizer4", exerciseFactorizer(new Memoizer0<>(f)));
-//        Mark7("Memoizer5", exerciseFactorizer(new Memoizer0<>(f)));
+        Mark7("Memoizer0", () -> execptionFreeFactorizer(new Memoizer0<>(f)));
+        Mark7("Memoizer1", () -> execptionFreeFactorizer(new Memoizer1<>(f)));
+        Mark7("Memoizer2", () -> execptionFreeFactorizer(new Memoizer2<>(f)));
+        Mark7("Memoizer3", () -> execptionFreeFactorizer(new Memoizer3<>(f)));
+        Mark7("Memoizer4", () -> execptionFreeFactorizer(new Memoizer4<>(f)));
+        Mark7("Memoizer5", () -> execptionFreeFactorizer(new Memoizer5<>(f)));
     }
 
-    public static double Mark7(String msg, IntToDoubleFunction f) {
-        int n = 10, count = 1, totalCount = 0;
-        double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
+    public static void execptionFreeFactorizer(Computable m) {
+        try {
+            exerciseFactorizer(m);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void Mark7(String msg, Runnable f) {
+        System.out.print(msg);
+        int n = 10, count = 1;
+        double runningTime = 0.0, st = 0.0;
         do {
             count *= 2;
-            st = sst = 0.0;
             for (int j=0; j<n; j++) {
                 Timer t = new Timer();
-                for (int i=0; i<count; i++)
-                    dummy += f.applyAsDouble(i);
+                for (int i=0; i<count; i++) {
+                    f.run();
+                }
                 runningTime = t.check();
                 double time = runningTime * 1e6 / count; // microseconds
                 st += time;
-                sst += time * time;
-                totalCount += count;
             }
         } while (runningTime < 0.25 && count < Integer.MAX_VALUE/2);
-        double mean = st/n, sdev = Math.sqrt((sst - mean*mean*n)/(n-1));
+        double mean = st/n;
         System.out.printf("%15.1f", mean);
         System.out.println();
-        return dummy / totalCount;
     }
 
     private static void exerciseFactorizer(Computable<Long, long[]> f) throws InterruptedException {
@@ -344,7 +351,10 @@ class Memoizer0<A, V> implements Computable<A, V> {
     }
 
     public V compute(A arg) throws InterruptedException {
-        return cache.putIfAbsent(arg, c.compute(arg));
+        return cache.computeIfAbsent(arg, (A argv) -> {
+            try { return c.compute(argv); }
+            catch (InterruptedException e) { return null; }
+        });
     }
 }
 
