@@ -1,0 +1,35 @@
+Exercise 4.1
+
+1) Done, using reduce
+
+Exercise 4.2
+
+Exercise 4.3
+
+Exercise 4.4
+
+Exercise 4.5
+
+1)
+
+Mark7: 15785866.9
+
+2)
+
+Mark7:  2513071.1
+
+3)
+
+About 4 minutes
+
+4)
+
+Mark7: 11359980.5
+
+5)
+
+The results vary wildly from the expected answer. 
+
+-1.6449340659819107
+
+Using objects with a mutable state when doing multithreaded work is never a good idea.
