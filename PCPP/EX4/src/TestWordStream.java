@@ -41,22 +41,26 @@ public class TestWordStream {
     System.out.println("Avg: " + s.getAverage());
     // 4.4.8
     System.out.println("4.4.8");
-    readWords(filename);
+    readWords(filename).collect(Collectors.groupingBy(String::length)).forEach((k, v) -> System.out.println(k.toString() + v.toString()));
     // 4.4.9
     System.out.println("4.4.9");
-    readWords(filename);
+    readWords(filename).limit(100).map(TestWordStream::letters).forEach(System.out::println);
     // 4.4.10
     System.out.println("4.4.10");
-    readWords(filename);
+    System.out.println(readWords(filename)
+            .map(TestWordStream::letters)
+            .map((x) -> x.getOrDefault('e', 0))
+            .reduce(0, (x, y) -> x + y));
     // 4.4.11
     System.out.println("4.4.11");
-    readWords(filename);
+    System.out.println(readWords(filename).collect(Collectors.groupingBy(TestWordStream::letters)).size());
     // 4.4.12
     System.out.println("4.4.12");
-    readWords(filename);
+    System.out.println(readWords(filename).parallel().collect(Collectors.groupingBy(TestWordStream::letters)).size());
     // 4.4.13
     System.out.println("4.4.13");
-    readWords(filename);
+
+    if (true) return;
 
     // *********************************
     // DoubleStreams
@@ -120,7 +124,11 @@ public class TestWordStream {
 
   public static Map<Character,Integer> letters(String s) {
     Map<Character,Integer> res = new TreeMap<>();
-    // TO DO: Implement properly
+    s.chars().forEach((x) -> {
+      char c = Character.toLowerCase((char) x);
+      int i = res.getOrDefault(c, 0);
+      res.put(c, i + 1);
+    });
     return res;
   }
 }
