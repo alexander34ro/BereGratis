@@ -3,10 +3,11 @@
 // Spark needs not to be installed (sbt takes care of it)
 
 import org.apache.spark.ml.feature.Tokenizer
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{Dataset, Row, SparkSession}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
+
+import scala.collection.mutable.ArrayBuffer
 
 // This
 // (https://stackoverflow.com/questions/40015416/spark-unable-to-load-native-hadoop-library-for-your-platform)
@@ -73,8 +74,8 @@ object Main {
     val reviews = loadReviews (s"${DATA_PATH}/reviews_small_1.json")
 
     // replace the following with the project code
-    glove.show
-    reviews.show
+    // glove.show
+    // reviews.show
 
     // Train the sentiment perceptron here (this is *one* possible workflow, and it is slow ...)
     //
@@ -86,7 +87,7 @@ object Main {
 
 		val tokenizer = new Tokenizer().setInputCol("text").setOutputCol("words")
 		val tokenized = tokenizer.transform(reviews).select("id", "words", "overall")
-		tokenized.show
+		// tokenized.show
 
     //  - Second translate the reviews to embeddings
     //      - Flatten the list to contain single words
@@ -94,7 +95,7 @@ object Main {
     //         longer than input
 
 		val expanded = tokenized.withColumn("word", explode($"words")).select("id", "word", "overall")
-		expanded.show
+		// expanded.show
 
     //      - Join the glove vectors with the triples
     //         output type: a collection (Integer, String, Double,
@@ -103,16 +104,35 @@ object Main {
     //         output type: a collection (Integer, Double, Array[Double])
 
 		val joined = expanded.join(glove, "word").select("id", "overall", "vec")
-		joined.show
+		// joined.show
 
     //      - Add a column of 1s
     //         output type: a collection (Integer, Double, Array[Double], Integer)
+
+		val with_ones = joined.withColumn("ones", lit(1))
+		// with_ones.show
+
     //      - Reduce By Key (using the first or two first columns as Key), summing the last column
     //         output type: a collection (Integer, Double, Array[Double], Integer)
     //         (just much shorter this time)
+
+		val summed = with_ones.groupBy($"id").sum("ones")
+		// summed.show
+		val reduced = summed.join(joined, "id").select("id", "overall", "vec", "sum(ones)")
+		//reduced.show
+
     //      - In each row divide the Array (vector) by the count (the last column)
     //         output type: a collection (Integer, Double, Array[Double])
     //         This is the input for the classifier training
+
+		val divided = reduced.map(row => {
+			val sum = row.getAs[Long]("sum(ones)")
+			( row.getAs[Int]("id"),
+				row.getAs[Double]("overall"),
+				row.getAs[ArrayBuffer[Double]]("vec").map(_/sum) )
+		})
+		divided.show
+
     //  - Train the perceptron:
     //      - translated the ratings from 1..5 to 1..3 (use map)
     //      - make sure tha columns are named "id", "label", "features"
