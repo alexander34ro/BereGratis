@@ -2,6 +2,7 @@
 // To execute this example, run "sbt run" or "sbt test" in the root dir of the project
 // Spark needs not to be installed (sbt takes care of it)
 
+import org.apache.spark.ml.classification.MultilayerPerceptronClassifier
 import org.apache.spark.ml.feature.Tokenizer
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 import org.apache.spark.sql.types._
@@ -153,7 +154,7 @@ object Main {
 
     val ratings =
       Map(1.0 -> 1.0, 2.0 -> 1.0, 3.0 -> 2.0, 4.0 -> 3.0, 5.0 -> 3.0)
-    val mapped = reduced
+    val train = reduced
       .map(row => {
         val rating = ratings(row.getAs[Double]("overall"))
         val sum = row.getAs[Long]("sum(ones)")
@@ -166,11 +167,20 @@ object Main {
       .withColumnRenamed("_1", "id")
       .withColumnRenamed("_2", "label")
       .withColumnRenamed("_3", "features")
-    mapped.show
+    train.show
 
     //      - follow the MultilayerPerceptronClassifier tutorial.
     //      - Remember that the first layer needs to be #50 (for vectors of size
     //      50), and the last needs to be #3.
+
+    val trainer = new MultilayerPerceptronClassifier()
+      .setMaxIter(50)
+      .setLayers(Array[Int](50, 5, 4, 3))
+      .setBlockSize(128)
+      .setSeed(1234L)
+
+    val model = trainer fit train
+
     //  - Validate the perceptron
     //      - Either implement your own validation loop  or use
     //        org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
