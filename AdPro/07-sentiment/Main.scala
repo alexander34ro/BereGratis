@@ -23,7 +23,7 @@ object Main {
 
   org.apache.log4j.Logger getLogger "org" setLevel (org.apache.log4j.Level.WARN)
   org.apache.log4j.Logger getLogger "akka" setLevel (org.apache.log4j.Level.WARN)
-  val spark = SparkSession.builder
+  val spark: SparkSession = SparkSession.builder
     .appName("Sentiment")
     .master("local[5]")
     .getOrCreate
@@ -53,6 +53,7 @@ object Main {
           (id.toInt, s"${row getString 2} ${row getString 0}", row getDouble 1)
       }
       .toDS
+      .limit(500)
       .withColumnRenamed("_1", "id")
       .withColumnRenamed("_2", "text")
       .withColumnRenamed("_3", "overall")
@@ -132,23 +133,41 @@ object Main {
     //         output type: a collection (Integer, Double, Array[Double])
     //         This is the input for the classifier training
 
-    val divided = reduced
-      .map(row => {
-        val sum = row.getAs[Long]("sum(ones)")
-        (
-          row.getAs[Int]("id"),
-          row.getAs[Double]("overall"),
-          row.getAs[ArrayBuffer[Double]]("vec").map(_ / sum)
-        )
-      })
-      .withColumnRenamed("_1", "id")
-      .withColumnRenamed("_2", "overall")
-      .withColumnRenamed("_3", "vec")
-    divided.show
+    // val divided = reduced
+    // 	.map(row => {
+    // 		val sum = row.getAs[Long]("sum(ones)")
+    // 		(
+    // 			row.getAs[Int]("id"),
+    // 			row.getAs[Double]("overall"),
+    // 			row.getAs[ArrayBuffer[Double]]("vec").map(_ / sum)
+    // 		)
+    // 	})
+    // 	.withColumnRenamed("_1", "id")
+    // 	.withColumnRenamed("_2", "overall")
+    // 	.withColumnRenamed("_3", "vec")
+    // divided.show
 
     //  - Train the perceptron:
     //      - translated the ratings from 1..5 to 1..3 (use map)
     //      - make sure tha columns are named "id", "label", "features"
+
+    val ratings =
+      Map(1.0 -> 1.0, 2.0 -> 1.0, 3.0 -> 2.0, 4.0 -> 3.0, 5.0 -> 3.0)
+    val mapped = reduced
+      .map(row => {
+        val rating = ratings(row.getAs[Double]("overall"))
+        val sum = row.getAs[Long]("sum(ones)")
+        (
+          row.getAs[Int]("id"),
+          rating,
+          row.getAs[ArrayBuffer[Double]]("vec").map(_ / sum)
+        )
+      })
+      .withColumnRenamed("_1", "id")
+      .withColumnRenamed("_2", "label")
+      .withColumnRenamed("_3", "features")
+    mapped.show
+
     //      - follow the MultilayerPerceptronClassifier tutorial.
     //      - Remember that the first layer needs to be #50 (for vectors of size
     //      50), and the last needs to be #3.
