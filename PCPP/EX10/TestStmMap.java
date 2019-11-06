@@ -1,4 +1,3 @@
-package stm;// For week 10
 // sestoft@itu.dk * 2014-11-12, 2015-10-14
 
 // Compile and run like this:
@@ -270,8 +269,9 @@ class StmMap<K, V> implements OurMap<K, V> {
         });
     }
 
+    // Return the size of the hashmap
     public int size() {
-        throw new RuntimeException("Not implemented");
+        return cachedSize.get();
     }
 
     // Put v at key k, or update if already present.
@@ -280,6 +280,9 @@ class StmMap<K, V> implements OurMap<K, V> {
         final int h = getHash(k), hash = h % bs.length;
         final ItemNode n = new ItemNode(k, v, null);
         atomic(() -> bs[hash].set(n));
+
+        if (!containsKey(k)) this.cachedSize.increment();
+
         return v;
     }
 
@@ -291,6 +294,7 @@ class StmMap<K, V> implements OurMap<K, V> {
 
         final ItemNode n = new ItemNode(k, v, null);
         atomic(() -> bs[hash].set(n));
+        this.cachedSize.increment();
         return v;
     }
 
@@ -300,6 +304,7 @@ class StmMap<K, V> implements OurMap<K, V> {
         final int h = getHash(k), hash = h % bs.length;
         final V v = atomic(() -> bs[hash].get().v);
         atomic(() -> bs[hash].set(null));
+        this.cachedSize.decrement();
         return v;
     }
 
