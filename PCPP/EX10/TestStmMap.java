@@ -271,7 +271,7 @@ class StmMap<K, V> implements OurMap<K, V> {
 
     // Return the size of the hashmap
     public int size() {
-        return cachedSize.get();
+        return cachedSize.atomicGet();
     }
 
     // Put v at key k, or update if already present.
@@ -281,7 +281,7 @@ class StmMap<K, V> implements OurMap<K, V> {
         final ItemNode n = new ItemNode(k, v, null);
         atomic(() -> bs[hash].set(n));
 
-        if (!containsKey(k)) this.cachedSize.increment();
+        if (!containsKey(k)) this.cachedSize.atomicIncrementAndGet(1);
 
         return v;
     }
@@ -294,7 +294,7 @@ class StmMap<K, V> implements OurMap<K, V> {
 
         final ItemNode n = new ItemNode(k, v, null);
         atomic(() -> bs[hash].set(n));
-        this.cachedSize.increment();
+        this.cachedSize.incrementAndGet(1);
         return v;
     }
 
@@ -304,7 +304,7 @@ class StmMap<K, V> implements OurMap<K, V> {
         final int h = getHash(k), hash = h % bs.length;
         final V v = atomic(() -> bs[hash].get().v);
         atomic(() -> bs[hash].set(null));
-        this.cachedSize.decrement();
+        this.cachedSize.atomicIncrementAndGet(-1);
         return v;
     }
 
