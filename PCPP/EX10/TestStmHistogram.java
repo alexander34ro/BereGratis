@@ -36,12 +36,37 @@ interface Histogram {
 }
 
 class TestStmHistogram {
-    public static void main(String[] args) {
-        countPrimeFactorsWithStmHistogram();
-    }
+	   public static void main(String[] args) {
+	 
+	        Histogram total=new StmHistogram(30);
+	        StmHistogram primes=countPrimeFactorsWithStmHistogram();
+	        Thread thread=new Thread(()->{
+		        	for(int i=0;i<200;i++) {
+		        	
+		        	try {
+						
+						total.transferBins(primes);
+						Thread.sleep(30);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	        	}
+	        dump(primes);
+	  	    System.out.println("--------");
+	  	        
+	        dump(total);
+	        });
+	        
+	        thread.start();
+	     
+	     
 
-    private static void countPrimeFactorsWithStmHistogram() {
-        final Histogram histogram = new StmHistogram(30);
+	        
+	    }
+
+    private static StmHistogram countPrimeFactorsWithStmHistogram() {
+        final StmHistogram histogram = new StmHistogram(30);
         final int range = 4_000_000;
         final int threadCount = 10, perThread = range / threadCount;
         final CyclicBarrier startBarrier = new CyclicBarrier(threadCount + 1),
@@ -74,7 +99,8 @@ class TestStmHistogram {
             stopBarrier.await();
         } catch (Exception exn) {
         }
-        dump(histogram);
+      //  dump(histogram);
+		return histogram;
     }
 
     public static void dump(Histogram histogram) {
@@ -137,7 +163,10 @@ class StmHistogram implements Histogram {
     }
 
     public void transferBins(Histogram hist) {
-        throw new RuntimeException("Not implemented");
-    }
+
+    	for(int i=0;i<hist.getSpan();i++) {
+    		final int k=i;
+    		atomic(()->this.counts[k].increment(hist.getAndClear(k)));
+    	}    }
 }
 
