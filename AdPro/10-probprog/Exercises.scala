@@ -1,33 +1,10 @@
 // Advanced Programming, Andrzej Wasowski
 // Probabilistic Programming (AKA Probability is also a monad)
 
-// Group number: _____
+// Group number: 11
 //
-// AUTHOR1: __________
-// TIME1: _____ <- how much time have you used on solving this exercise set
-// (excluding reading the book, fetching pizza, and going out for a smoke)
-//
-// AUTHOR2: __________
-// TIME2: _____ <- how much time have you used on solving this exercise set
-// (excluding reading the book, fetching pizza, and going out for a smoke)
-//
-// You should work with the file by following the associated exercise sheet
-// (available in PDF from the course website).
-//
-// This file is compiled with 'sbt compile' and tested with 'sbt test'.
-//
-// The file shall always compile and run after you are done with each exercise
-// (if you do them in order).  Please compile and test frequently. Of course,
-// some tests will be failing until you finish.  One will be failing after you
-// finish.
-
-// Advanced Programming, Andrzej Wasowski
-// Probabilistic Programming (AKA Probability is also a monad)
-
-// Group number: _____
-//
-// AUTHOR1: __________
-// TIME1: _____ <- how much time have you used on solving this exercise set
+// AUTHOR1: Alex Ardelean
+// TIME1: 5 <- how much time have you used on solving this exercise set
 // (excluding reading the book, fetching pizza, and going out for a smoke)
 //
 // AUTHOR2: __________
